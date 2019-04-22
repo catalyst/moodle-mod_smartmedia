@@ -15,17 +15,36 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin strings are defined here.
+ * The mod_folder course module viewed event.
  *
  * @package     mod_smartmedia
- * @category    string
  * @copyright   2019 Matt Porritt <mattp@catalyst-au.net>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_smartmedia\event;
+
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Smart media activity';
-$string['modulename'] = 'Smart media';
-$string['modulenameplural'] = 'Smart media';
-$string['pluginadministration'] = 'Smart media administration';
+/**
+ * The mod_folder course module viewed event class.
+ *
+ * @package     mod_smartmedia
+ * @copyright   2019 Matt Porritt <mattp@catalyst-au.net>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class course_module_viewed extends \core\event\course_module_viewed {
+
+    /**
+     * Init method.
+     */
+    protected function init() {
+        $this->data['crud'] = 'r';
+        $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
+        $this->data['objecttable'] = 'folder';
+    }
+
+    public static function get_objectid_mapping() {
+        return array('db' => 'folder', 'restore' => 'folder');
+    }
+}

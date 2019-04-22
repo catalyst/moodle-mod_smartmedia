@@ -47,7 +47,7 @@ class mod_smartmedia_mod_form extends moodleform_mod {
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Adding the standard "name" field.
-        $mform->addElement('text', 'name', get_string('smartmedianame', 'mod_smartmedia'), array('size' => '64'));
+        $mform->addElement('text', 'name', get_string('name'), array('size' => '64'));
 
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
@@ -57,19 +57,19 @@ class mod_smartmedia_mod_form extends moodleform_mod {
 
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton('name', 'smartmedianame', 'mod_smartmedia');
 
         // Adding the standard "intro" and "introformat" fields.
-        if ($CFG->branch >= 29) {
-            $this->standard_intro_elements();
-        } else {
-            $this->add_intro_editor();
-        }
+        $this->standard_intro_elements();
+        $element = $mform->getElement('introeditor');
+        $attributes = $element->getAttributes();
+        $attributes['rows'] = 5;
+        $element->setAttributes($attributes);
 
-        // Adding the rest of mod_smartmedia settings, spreading all them into this fieldset
-        // ... or adding more fieldsets ('header' elements) if needed for better logic.
-        $mform->addElement('static', 'label1', 'smartmediasettings', get_string('smartmediasettings', 'mod_smartmedia'));
-        $mform->addElement('header', 'smartmediafieldset', get_string('smartmediafieldset', 'mod_smartmedia'));
+
+//         // Adding the rest of mod_smartmedia settings, spreading all them into this fieldset
+//         // ... or adding more fieldsets ('header' elements) if needed for better logic.
+//         $mform->addElement('static', 'label1', 'smartmediasettings', get_string('smartmediasettings', 'mod_smartmedia'));
+//         $mform->addElement('header', 'smartmediafieldset', get_string('smartmediafieldset', 'mod_smartmedia'));
 
         // Add standard elements.
         $this->standard_coursemodule_elements();

@@ -34,9 +34,9 @@ $s  = optional_param('s', 0, PARAM_INT);
 if ($id) {
     $cm             = get_coursemodule_from_id('smartmedia', $id, 0, false, MUST_EXIST);
     $course         = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $moduleinstance = $DB->get_record('mod_smartmedia', array('id' => $cm->instance), '*', MUST_EXIST);
+    $moduleinstance = $DB->get_record('smartmedia', array('id' => $cm->instance), '*', MUST_EXIST);
 } else if ($s) {
-    $moduleinstance = $DB->get_record('mod_smartmedia', array('id' => $n), '*', MUST_EXIST);
+    $moduleinstance = $DB->get_record('smartmedia', array('id' => $n), '*', MUST_EXIST);
     $course         = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
     $cm             = get_coursemodule_from_instance('smartmedia', $moduleinstance->id, $course->id, false, MUST_EXIST);
 } else {
@@ -52,7 +52,7 @@ $event = \mod_smartmedia\event\course_module_viewed::create(array(
     'context' => $modulecontext
 ));
 $event->add_record_snapshot('course', $course);
-$event->add_record_snapshot('mod_smartmedia', $moduleinstance);
+$event->add_record_snapshot('smartmedia', $moduleinstance);
 $event->trigger();
 
 $PAGE->set_url('/mod/smartmedia/view.php', array('id' => $cm->id));

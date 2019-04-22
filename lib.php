@@ -30,12 +30,19 @@ defined('MOODLE_INTERNAL') || die();
  * @param string $feature Constant representing the feature.
  * @return true | null True if the feature is supported, null otherwise.
  */
-function mod_smartmedia_supports($feature) {
-    switch ($feature) {
-        case FEATURE_MOD_INTRO:
-            return true;
-        default:
-            return null;
+function smartmedia_supports($feature) {
+    switch($feature) {
+        case FEATURE_MOD_ARCHETYPE:           return MOD_ARCHETYPE_RESOURCE;
+        case FEATURE_GROUPS:                  return false;
+        case FEATURE_GROUPINGS:               return false;
+        case FEATURE_MOD_INTRO:               return true;
+        case FEATURE_COMPLETION_TRACKS_VIEWS: return true;
+        case FEATURE_GRADE_HAS_GRADE:         return false;
+        case FEATURE_GRADE_OUTCOMES:          return false;
+        case FEATURE_BACKUP_MOODLE2:          return true;
+        case FEATURE_SHOW_DESCRIPTION:        return true;
+
+        default: return null;
     }
 }
 
@@ -50,12 +57,12 @@ function mod_smartmedia_supports($feature) {
  * @param mod_smartmedia_mod_form $mform The form.
  * @return int The id of the newly inserted record.
  */
-function mod_smartmedia_add_instance($moduleinstance, $mform = null) {
+function smartmedia_add_instance($moduleinstance, $mform = null) {
     global $DB;
 
     $moduleinstance->timecreated = time();
 
-    $id = $DB->insert_record('mod_smartmedia', $moduleinstance);
+    $id = $DB->insert_record('smartmedia', $moduleinstance);
 
     return $id;
 }
@@ -70,13 +77,17 @@ function mod_smartmedia_add_instance($moduleinstance, $mform = null) {
  * @param mod_smartmedia_mod_form $mform The form.
  * @return bool True if successful, false otherwise.
  */
-function mod_smartmedia_update_instance($moduleinstance, $mform = null) {
+function smartmedia_update_instance($moduleinstance, $mform = null) {
     global $DB;
 
     $moduleinstance->timemodified = time();
     $moduleinstance->id = $moduleinstance->instance;
+    $context = context_module::instance($moduleinstance->coursemodule);
 
-    return $DB->update_record('mod_smartmedia', $moduleinstance);
+    return $DB->update_record('smartmedia', $moduleinstance);
+    $event = \core\event\course_module_updated::create_from_cm($moduleinstance, $context);
+    $event->trigger();
+
 }
 
 /**
@@ -85,15 +96,15 @@ function mod_smartmedia_update_instance($moduleinstance, $mform = null) {
  * @param int $id Id of the module instance.
  * @return bool True if successful, false on failure.
  */
-function mod_smartmedia_delete_instance($id) {
+function smartmedia_delete_instance($id) {
     global $DB;
 
-    $exists = $DB->get_record('mod_smartmedia', array('id' => $id));
+    $exists = $DB->get_record('smartmedia', array('id' => $id));
     if (!$exists) {
         return false;
     }
 
-    $DB->delete_records('mod_smartmedia', array('id' => $id));
+    $DB->delete_records('smartmedia', array('id' => $id));
 
     return true;
 }
